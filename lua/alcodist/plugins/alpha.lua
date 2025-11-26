@@ -92,5 +92,27 @@ return {
 				end
 			end,
 		})
+
+		---------------------------------------------------------------------
+		-- IDLE DASHBOARD “SCREENSAVER” (10 SECONDS)
+		---------------------------------------------------------------------
+		local idle_time = 10000 -- 10 seconds
+		local idle_timer = vim.loop.new_timer()
+
+		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+			callback = function()
+				idle_timer:stop()
+				idle_timer:start(
+					idle_time,
+					0,
+					vim.schedule_wrap(function()
+						-- Only open Alpha if buffer is empty
+						if vim.fn.empty(vim.fn.expand("%")) == 1 then
+							require("alpha").start(true)
+						end
+					end)
+				)
+			end,
+		})
 	end,
 }
